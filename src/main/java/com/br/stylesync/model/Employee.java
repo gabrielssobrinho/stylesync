@@ -1,9 +1,7 @@
 package com.br.stylesync.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Date;
 
@@ -11,6 +9,9 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Employee extends AuditEntity {
 
     @Column(nullable = false)

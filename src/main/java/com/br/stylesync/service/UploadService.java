@@ -13,6 +13,8 @@ import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -34,28 +36,28 @@ public class UploadService {
         try {
             log.info("Finalize upload - {}", upload);
 
-            CsvToBean<ProductCsv> csvReader = new CsvToBeanBuilder<ProductCsv>(upload.getFile())
-                    .withType(ProductCsv.class)
-                    .withSeparator(';')
-                    .withIgnoreLeadingWhiteSpace(true)
-                    .withIgnoreQuotations(true)
-                    .withIgnoreEmptyLine(true)
-                    .build();
+            //CsvToBean<ProductCsv> csvReader = new CsvToBeanBuilder<ProductCsv>(upload.getFile())
+            //        .withType(ProductCsv.class)
+            //        .withSeparator(';')
+            //        .withIgnoreLeadingWhiteSpace(true)
+            //        .withIgnoreQuotations(true)
+            //        .withIgnoreEmptyLine(true)
+            //        .build();
 
-            List<ProductCsv> results = csvReader.parse();
+            //List<ProductCsv> results = csvReader.parse();
 
-            boolean finalizeWithSuccess = this.createCmDataByCsv(results, cmDataVersion);
-            reader.close();
+            //boolean finalizeWithSuccess = this.createCmDataByCsv(results, cmDataVersion);
+            //reader.close();
 
-            if (finalizeWithSuccess) {
-                cmDataVersion.setUploadStatus(UploadStatus.SUCCESS);
-                log.info("Building complete - {}", cmDataVersion.getStatus());
-            }
+            //if (finalizeWithSuccess) {
+            //    cmDataVersion.setUploadStatus(UploadStatus.SUCCESS);
+            //    log.info("Building complete - {}", cmDataVersion.getStatus());
+            //}
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            this.finalizeImportWithError(cmDataVersion.getId(), new ArrayList<>());
+            //this.finalizeImportWithError(cmDataVersion.getId(), new ArrayList<>());
         }
-        this.cmDataVersionService.save(cmDataVersion);
+        //this.cmDataVersionService.save(cmDataVersion);
     }
 }

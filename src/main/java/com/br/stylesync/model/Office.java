@@ -1,5 +1,6 @@
 package com.br.stylesync.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.*;
 
@@ -12,7 +13,8 @@ import lombok.*;
 @AllArgsConstructor
 public class Office extends AuditEntity {
 
+    @Column(nullable = false, unique = true)
     private String name;
-
-    
+    @Column(nullable = false)
+    private String description;
 }

@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -30,6 +31,9 @@ public class EmployeeService {
     @Autowired
     private ImageService imageService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public ResponseEntity<ApiResponse> saveEmployee(EmployeeRequest employeeRequest) throws ParseException, IOException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         if (employeeRepository.existsByEmail(employeeRequest.email())) {
@@ -45,7 +49,7 @@ public class EmployeeService {
         Employee employee = Employee.builder()
                 .name(employeeRequest.name())
                 .email(employeeRequest.email())
-                .password(employeeRequest.password())
+                .password(passwordEncoder.encode(employeeRequest.password()))
                 .birthDate(sdf.parse(employeeRequest.birthDate()))
                 .phone(employeeRequest.phone())
                 .address(employeeRequest.address())

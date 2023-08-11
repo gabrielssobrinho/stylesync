@@ -1,4 +1,4 @@
-package com.br.stylesync.service.auth;
+package com.br.stylesync.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotBlank;

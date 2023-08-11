@@ -7,9 +7,12 @@ import com.br.stylesync.model.Employee;
 import com.br.stylesync.model.Image;
 import com.br.stylesync.repository.EmployeeRepository;
 import com.br.stylesync.repository.OfficeRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -66,5 +69,15 @@ public class EmployeeService {
 
     public ResponseEntity<ApiResponse> getEmployees() {
         return ResponseEntity.ok().body(new ApiResponse("Employees found", employeeRepository.findAll().stream().map(EmployeeResponse::new).toList()));
+    }
+
+    public UserDetailsService userDetailsService() {
+        return username -> employeeRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    public Employee getAuthenticatedUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return employeeRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 }

@@ -4,6 +4,7 @@ import com.br.stylesync.model.Image;
 import com.br.stylesync.repository.ImageRepository;
 import com.br.stylesync.utils.ImageUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,9 +16,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class ImageService {
-    private final ImageRepository imageRepository;
+
+    @Autowired
+    private ImageRepository imageRepository;
 
     public Image uploadImage(MultipartFile file) throws IOException {
         if(file == null){

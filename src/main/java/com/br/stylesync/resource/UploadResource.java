@@ -18,7 +18,7 @@ public class UploadResource {
                                                                   @RequestPart String justification) throws Exception {
         log.info("import starts");
         final DeferredResult<ResponseEntity<Void>> dr = new DeferredResult<>();
-        CMDataVersion cmDataVersion = cmDataVersionService.createByImport(file, justification);
+        //CMDataVersion cmDataVersion = cmDataVersionService.createByImport(file, justification);
         dr.setResult(ResponseEntity.ok().build());
         return dr;
     }

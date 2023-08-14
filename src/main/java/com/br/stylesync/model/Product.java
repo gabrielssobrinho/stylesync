@@ -8,6 +8,9 @@ import lombok.*;
 @Setter
 @Table(name = "product")
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Product extends AuditEntity {
 
     @Column(name = "sku", unique = true)

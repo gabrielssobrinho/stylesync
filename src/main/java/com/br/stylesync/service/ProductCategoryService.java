@@ -2,6 +2,7 @@ package com.br.stylesync.service;
 
 import com.br.stylesync.dto.request.ProductCategoryRequest;
 import com.br.stylesync.dto.response.ApiResponse;
+import com.br.stylesync.dto.response.ProductCategoryResponse;
 import com.br.stylesync.model.ProductCategory;
 import com.br.stylesync.repository.ProductCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +28,15 @@ public class ProductCategoryService {
     }
 
     public ResponseEntity<ApiResponse> getAllProductCategories() {
-        return ResponseEntity.ok().body(new ApiResponse("Categories fetched successfully", categoryRepository.findAll()));
+        return ResponseEntity.ok().body(new ApiResponse("Categories fetched successfully", categoryRepository.findAll().stream().map(category -> new ProductCategoryResponse(category.getName(), category.getId())).toList()));
     }
 
     public ResponseEntity<ApiResponse> getProductCategoryById(UUID id) {
-        return ResponseEntity.ok().body(new ApiResponse("Category fetched successfully", categoryRepository.findById(id)));
+        ProductCategory category = categoryRepository.findById(id).orElse(null);
+        if (category == null){
+            return ResponseEntity.badRequest().body(new ApiResponse("Category not found", null));
+        }
+        return ResponseEntity.ok().body(new ApiResponse("Category fetched successfully", new ProductCategoryResponse(category.getName(), category.getId())));
     }
 
     public ResponseEntity<ApiResponse> updateProductCategory(UUID id, ProductCategoryRequest request) {

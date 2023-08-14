@@ -1,5 +1,6 @@
 package com.br.stylesync.resource;
 
+import com.br.stylesync.dto.request.ProducRequest;
 import com.br.stylesync.dto.response.ApiResponse;
 import com.br.stylesync.model.Product;
 import com.br.stylesync.service.ProductService;
@@ -18,9 +19,9 @@ public class ProductResource {
     private ProductService productService;
 
     @PostMapping
-    public DeferredResult<ResponseEntity<ApiResponse>> saveProduct(@RequestBody Product product) {
+    public DeferredResult<ResponseEntity<ApiResponse>> saveProduct(@RequestBody ProducRequest request) {
         final DeferredResult<ResponseEntity<ApiResponse>> deferredResult = new DeferredResult<>();
-        deferredResult.setResult(this.productService.saveProduct(product));
+        deferredResult.setResult(this.productService.saveProduct(request));
         return deferredResult;
     }
 

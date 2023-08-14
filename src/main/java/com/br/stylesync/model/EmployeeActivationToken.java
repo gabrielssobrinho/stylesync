@@ -1,9 +1,6 @@
 package com.br.stylesync.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,8 +20,12 @@ public class EmployeeActivationToken {
 
     private LocalDateTime expireDate;
 
-    public EmployeeActivationToken(LocalDateTime expireDate) {
-        this.expireDate = expireDate.plusMinutes(30);
+    @OneToOne
+    private Employee employee;
+
+    public EmployeeActivationToken(Employee employee) {
+        this.employee = employee;
+        this.expireDate = LocalDateTime.now().plusMinutes(30);
     }
 
     public Boolean isExpired() {

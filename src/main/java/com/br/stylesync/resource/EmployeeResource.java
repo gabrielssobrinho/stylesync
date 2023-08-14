@@ -51,4 +51,9 @@ public class EmployeeResource {
         return this.employeeService.deleteEmployee(id);
     }
 
+    @GetMapping("activate/{token}")
+    public ResponseEntity<ApiResponse> activateEmployee(@PathVariable UUID token) {
+        log.info("activating employee by token: {}", token);
+        return this.employeeService.activateEmployee(token);
+    }
 }

@@ -16,16 +16,12 @@ public class OfficeResource {
     private OfficeService officeService;
 
     @PostMapping
-    public DeferredResult<ResponseEntity<ApiResponse>> saveOffice(@RequestBody OfficeRequest officeRequest) {
-        final DeferredResult<ResponseEntity<ApiResponse>> deferredResult = new DeferredResult<>();
-        deferredResult.setResult(this.officeService.saveOffice(officeRequest));
-        return deferredResult;
+    public ResponseEntity<ApiResponse> saveOffice(@RequestBody OfficeRequest officeRequest) {
+        return officeService.saveOffice(officeRequest);
     }
 
     @GetMapping
-    public DeferredResult<ResponseEntity<ApiResponse>> getAllOffices() {
-        final DeferredResult<ResponseEntity<ApiResponse>> deferredResult = new DeferredResult<>();
-        deferredResult.setResult(this.officeService.getAllOffices());
-        return deferredResult;
+    public ResponseEntity<ApiResponse> getAllOffices() {
+        return officeService.getAllOffices();
     }
 }

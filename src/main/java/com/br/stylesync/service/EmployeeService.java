@@ -6,9 +6,12 @@ import com.br.stylesync.dto.response.EmployeeResponse;
 import com.br.stylesync.dto.UpdateEmployeeDto;
 import com.br.stylesync.enums.Role;
 import com.br.stylesync.model.Employee;
+import com.br.stylesync.model.EmployeeActivationToken;
 import com.br.stylesync.model.Image;
+import com.br.stylesync.repository.EmployeeActivationTokenRepository;
 import com.br.stylesync.repository.EmployeeRepository;
 import com.br.stylesync.repository.OfficeRepository;
+import com.br.stylesync.utils.EmailUtils;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +36,7 @@ public class EmployeeService {
     @Autowired
     private ImageService imageService;
     @Autowired
-    private HttpSession session;
+    private EmployeeActivationTokenRepository employeeActivationTokenRepository;
 
     public ResponseEntity<ApiResponse> saveEmployee(EmployeeRequest employeeRequest) throws ParseException, IOException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -54,14 +57,14 @@ public class EmployeeService {
                 .birthDate(sdf.parse(employeeRequest.birthDate()))
                 .phone(employeeRequest.phone())
                 .address(employeeRequest.address())
-                .office(officeRepository.findById(employeeRequest.officeId()).orElseThrow(null))
+                .office(officeRepository.findById(employeeRequest.officeId()).orElse(null))
                 .profileImage(image)
                 .role(Role.EMPLOYEE)
                 .build();
         employee.setCreatedBy(Employee.currentUser().getName());
         employeeRepository.save(employee);
 
-
+        EmailUtils.sendEmail(employee, getActivationLink(employee));
         return ResponseEntity.ok().body(new ApiResponse("Employee saved successfully", employeeRequest));
     }
 
@@ -123,14 +126,21 @@ public class EmployeeService {
         return ResponseEntity.ok().body(new ApiResponse("Employee deleted successfully", id));
     }
 
-    public String getActivationLink(UUID id) {
-        Employee employee = employeeRepository.findById(id).orElse(null);
-        if(employee == null){
-            return null;
+    public String getActivationLink(Employee employee) {
+        EmployeeActivationToken employeeActivationToken = new EmployeeActivationToken(employee);
+        employeeActivationTokenRepository.save(employeeActivationToken);
+        return "http://localhost:8080/employee/activate/" + employeeActivationToken.getId();
+    }
+
+    public ResponseEntity<ApiResponse> activateEmployee(UUID token) {
+        EmployeeActivationToken employeeActivationToken = employeeActivationTokenRepository.findById(token).orElse(null);
+        if (employeeActivationToken == null) {
+            return ResponseEntity.badRequest().body(new ApiResponse("Token not found", token));
         }
-
-
-
-        return null;
+        Employee employee = employeeActivationToken.getEmployee();
+        employee.setActive(true);
+        employeeRepository.save(employee);
+        employeeActivationTokenRepository.delete(employeeActivationToken);
+        return ResponseEntity.ok().body(new ApiResponse("Employee activated successfully", new EmployeeResponse(employee)));
     }
 }

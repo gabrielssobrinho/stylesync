@@ -1,19 +1,19 @@
 package com.br.stylesync.service;
 
-import com.br.stylesync.dto.ApiResponse;
-import com.br.stylesync.dto.EmployeeRequest;
-import com.br.stylesync.dto.EmployeeResponse;
+import com.br.stylesync.dto.response.ApiResponse;
+import com.br.stylesync.dto.request.EmployeeRequest;
+import com.br.stylesync.dto.response.EmployeeResponse;
+import com.br.stylesync.dto.UpdateEmployeeDto;
+import com.br.stylesync.enums.Role;
 import com.br.stylesync.model.Employee;
 import com.br.stylesync.model.Image;
 import com.br.stylesync.repository.EmployeeRepository;
 import com.br.stylesync.repository.OfficeRepository;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,6 +32,8 @@ public class EmployeeService {
     private OfficeRepository officeRepository;
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private HttpSession session;
 
     public ResponseEntity<ApiResponse> saveEmployee(EmployeeRequest employeeRequest) throws ParseException, IOException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -54,6 +56,7 @@ public class EmployeeService {
                 .address(employeeRequest.address())
                 .office(officeRepository.findById(employeeRequest.officeId()).orElse(null))
                 .profileImage(image)
+                .role(Role.EMPLOYEE)
                 .build();
         employee.setCreatedBy("admin");
         employeeRepository.save(employee);
@@ -79,8 +82,43 @@ public class EmployeeService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    public Employee getAuthenticatedUser(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return employeeRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    public Employee findByEmail(String userEmail) {
+        return employeeRepository.findByEmail(userEmail).orElse(null);
+    }
+
+    public ResponseEntity<ApiResponse> updateEmployee(UUID id, UpdateEmployeeDto employeeRequest) throws IOException {
+        Employee employee = employeeRepository.findById(id).orElse(null);
+        if(employee == null){
+            return ResponseEntity.badRequest().body(new ApiResponse("Employee not found", id));
+        }
+        if(employeeRequest.email() != null && !employeeRequest.email().equals(employee.getEmail())){
+            if(employeeRepository.existsByEmail(employeeRequest.email())){
+                return ResponseEntity.badRequest().body(new ApiResponse("Email already exists", employeeRequest.email()));
+            }
+        }
+        if(employeeRequest.profileImage() != null){
+            Image image = imageService.uploadImage(employeeRequest.profileImage());
+            employee.setProfileImage(image);
+        }
+        if(employeeRequest.password() != null){
+            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            employee.setPassword(passwordEncoder.encode(employeeRequest.password()));
+        }
+        if(employeeRequest.officeId() != null && employeeRequest.officeId() != employee.getOffice().getId()){
+            employee.setOffice(officeRepository.findById(employeeRequest.officeId()).orElse(null));
+        }
+        employee.updateUser(employeeRequest);
+        employeeRepository.save(employee);
+        return ResponseEntity.ok().body(new ApiResponse("Employee updated successfully", new EmployeeResponse(employee)));
+    }
+
+    public ResponseEntity<ApiResponse> deleteEmployee(UUID id) {
+        Employee employee = employeeRepository.findById(id).orElse(null);
+        if(employee == null){
+            return ResponseEntity.badRequest().body(new ApiResponse("Employee not found", id));
+        }
+        employee.setActive(false);
+        employeeRepository.save(employee);
+        return ResponseEntity.ok().body(new ApiResponse("Employee deleted successfully", id));
     }
 }

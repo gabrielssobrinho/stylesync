@@ -1,4 +1,4 @@
-package com.br.stylesync.dto;
+package com.br.stylesync.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,7 +10,7 @@ import java.util.UUID;
 public record EmployeeRequest(@NotBlank String name,
                               @NotBlank String email,
                               @NotBlank String password,
-                              @NotNull String birthDate,
+                              @NotBlank String birthDate,
                               @NotBlank String phone,
                               @NotBlank String address,
                               @NotNull UUID officeId,

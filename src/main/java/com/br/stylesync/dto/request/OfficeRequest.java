@@ -1,4 +1,4 @@
-package com.br.stylesync.dto;
+package com.br.stylesync.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 

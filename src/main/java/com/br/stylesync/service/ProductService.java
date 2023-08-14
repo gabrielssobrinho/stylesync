@@ -1,7 +1,6 @@
 package com.br.stylesync.service;
 
-import com.br.stylesync.dto.ApiResponse;
-import com.br.stylesync.dto.ProductRequest;
+import com.br.stylesync.dto.response.ApiResponse;
 import com.br.stylesync.model.Product;
 import com.br.stylesync.repository.ProductRespository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,5 +18,10 @@ public class ProductService {
         Optional<Product> productO = productRespository.findById(id);
         return productO.map(product -> ResponseEntity.ok().body(new ApiResponse("Produto encontrado", product)))
                 .orElseGet(() -> ResponseEntity.badRequest().body(new ApiResponse("Produto não encontrado", id)));
+    }
+
+    public ResponseEntity<ApiResponse> saveProduct(Product product) {
+        Product productSaved = productRespository.save(product);
+        return ResponseEntity.ok().body(new ApiResponse("Produto salvo com sucesso", productSaved));
     }
 }

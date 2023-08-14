@@ -1,4 +1,4 @@
-package com.br.stylesync.dto;
+package com.br.stylesync.dto.response;
 
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;

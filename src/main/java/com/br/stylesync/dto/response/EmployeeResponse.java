@@ -1,4 +1,4 @@
-package com.br.stylesync.dto;
+package com.br.stylesync.dto.response;
 
 import com.br.stylesync.model.Employee;
 import com.br.stylesync.model.Image;

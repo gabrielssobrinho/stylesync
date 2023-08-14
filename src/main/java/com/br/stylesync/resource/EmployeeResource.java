@@ -1,13 +1,13 @@
 package com.br.stylesync.resource;
 
-import com.br.stylesync.dto.ApiResponse;
-import com.br.stylesync.dto.EmployeeRequest;
+import com.br.stylesync.dto.response.ApiResponse;
+import com.br.stylesync.dto.request.EmployeeRequest;
+import com.br.stylesync.dto.UpdateEmployeeDto;
 import com.br.stylesync.service.EmployeeService;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.async.DeferredResult;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -15,30 +15,40 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("employee")
+@Slf4j
 public class EmployeeResource {
 
     @Autowired
     private EmployeeService employeeService;
 
     @PostMapping
-    public DeferredResult<ResponseEntity<ApiResponse>> saveEmployee(@RequestBody EmployeeRequest employeeRequest) throws ParseException, IOException {
-        final DeferredResult<ResponseEntity<ApiResponse>> deferredResult = new DeferredResult<>();
-        deferredResult.setResult(this.employeeService.saveEmployee(employeeRequest));
-        return deferredResult;
+    public ResponseEntity<ApiResponse> saveEmployee(@RequestBody EmployeeRequest employeeRequest) throws ParseException, IOException {
+        log.info("saving employee");
+        return this.employeeService.saveEmployee(employeeRequest);
     }
 
     @GetMapping
-    public DeferredResult<ResponseEntity<ApiResponse>> getEmployees() {
-        final DeferredResult<ResponseEntity<ApiResponse>> deferredResult = new DeferredResult<>();
-        deferredResult.setResult(this.employeeService.getEmployees());
-        return deferredResult;
+    public ResponseEntity<ApiResponse> getEmployees() {
+        log.info("getting employees");
+        return this.employeeService.getEmployees();
     }
 
     @GetMapping("{id}")
-    public DeferredResult<ResponseEntity<ApiResponse>> getEmployee(@PathVariable UUID id) {
-        final DeferredResult<ResponseEntity<ApiResponse>> deferredResult = new DeferredResult<>();
-        deferredResult.setResult(this.employeeService.getEmployee(id));
-        return deferredResult;
+    public ResponseEntity<ApiResponse> getEmployee(@PathVariable UUID id) {
+        log.info("getting employee by id: {}", id);
+        return this.employeeService.getEmployee(id);
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<ApiResponse> updateEmployee(@PathVariable UUID id, @RequestBody UpdateEmployeeDto employeeRequest) throws ParseException, IOException {
+        log.info("updating employee by id: {}", id);
+        return this.employeeService.updateEmployee(id, employeeRequest);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<ApiResponse> deleteEmployee(@PathVariable UUID id) {
+        log.info("deleting employee by id: {}", id);
+        return this.employeeService.deleteEmployee(id);
     }
 
 }

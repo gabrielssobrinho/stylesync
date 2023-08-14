@@ -33,7 +33,10 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers("/api/v1/auth/**", "/v3/api-docs/**", "/swagger-ui/**")
+                        request.requestMatchers(
+                                        "/auth/**",
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui/**")
                                 .permitAll().anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(

@@ -1,6 +1,7 @@
 package com.br.stylesync.config;
 
 
+import com.br.stylesync.model.Employee;
 import com.br.stylesync.service.EmployeeService;
 import com.br.stylesync.service.auth.JwtService;
 import jakarta.servlet.FilterChain;
@@ -54,6 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 context.setAuthentication(authToken);
                 SecurityContextHolder.setContext(context);
+                Employee.setCurrentUser(userService.findByEmail(userEmail));
             }
         }
         filterChain.doFilter(request, response);

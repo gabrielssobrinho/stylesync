@@ -1,7 +1,7 @@
 package com.br.stylesync.service.auth;
 
-import com.br.stylesync.dto.JwtAuthResponse;
-import com.br.stylesync.dto.SignInRequest;
+import com.br.stylesync.dto.response.JwtAuthResponse;
+import com.br.stylesync.dto.request.SignInRequest;
 import com.br.stylesync.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -1,7 +1,7 @@
 package com.br.stylesync.service;
 
-import com.br.stylesync.dto.ApiResponse;
-import com.br.stylesync.dto.OfficeRequest;
+import com.br.stylesync.dto.response.ApiResponse;
+import com.br.stylesync.dto.request.OfficeRequest;
 import com.br.stylesync.model.Office;
 import com.br.stylesync.repository.OfficeRepository;
 import org.springframework.beans.factory.annotation.Autowired;

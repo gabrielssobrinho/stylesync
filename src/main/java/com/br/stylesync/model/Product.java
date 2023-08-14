@@ -1,6 +1,5 @@
 package com.br.stylesync.model;
 
-import com.br.stylesync.enums.ProductCategory;
 import jakarta.persistence.*;
 import lombok.*;
 

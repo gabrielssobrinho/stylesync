@@ -1,5 +1,6 @@
 package com.br.stylesync.service;
 
+import com.br.stylesync.dto.CustomerUpdateDto;
 import com.br.stylesync.dto.request.CustomerRequest;
 import com.br.stylesync.dto.response.ApiResponse;
 import com.br.stylesync.dto.response.CustomerResponse;
@@ -50,7 +51,7 @@ public class CustomerService {
         return ResponseEntity.ok(new ApiResponse("Customers found successfully", customerRepository.findAll().stream().map(CustomerResponse::new).toList()));
     }
 
-    public ResponseEntity<ApiResponse> updateCustomer(UUID id, CustomerRequest request) {
+    public ResponseEntity<ApiResponse> updateCustomer(UUID id, CustomerUpdateDto request) {
         Customer customer = customerRepository.findById(id).orElseThrow(() -> new RuntimeException("Customer not found"));
 
         if(customerRepository.existsByEmail(request.email()) && !customer.getEmail().equals(request.email())){

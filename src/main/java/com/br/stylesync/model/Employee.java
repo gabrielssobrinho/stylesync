@@ -53,7 +53,7 @@ public class Employee extends AuditEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    private Boolean active = true;
+    private Boolean active = false;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

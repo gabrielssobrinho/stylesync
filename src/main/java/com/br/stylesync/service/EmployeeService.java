@@ -54,12 +54,13 @@ public class EmployeeService {
                 .birthDate(sdf.parse(employeeRequest.birthDate()))
                 .phone(employeeRequest.phone())
                 .address(employeeRequest.address())
-                .office(officeRepository.findById(employeeRequest.officeId()).orElse(null))
+                .office(officeRepository.findById(employeeRequest.officeId()).orElseThrow(null))
                 .profileImage(image)
                 .role(Role.EMPLOYEE)
                 .build();
-        employee.setCreatedBy("admin");
+        employee.setCreatedBy(Employee.currentUser().getName());
         employeeRepository.save(employee);
+
 
         return ResponseEntity.ok().body(new ApiResponse("Employee saved successfully", employeeRequest));
     }
@@ -120,5 +121,16 @@ public class EmployeeService {
         employee.setActive(false);
         employeeRepository.save(employee);
         return ResponseEntity.ok().body(new ApiResponse("Employee deleted successfully", id));
+    }
+
+    public String getActivationLink(UUID id) {
+        Employee employee = employeeRepository.findById(id).orElse(null);
+        if(employee == null){
+            return null;
+        }
+
+
+
+        return null;
     }
 }

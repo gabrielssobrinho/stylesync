@@ -2,6 +2,7 @@ package com.br.stylesync.service;
 
 import com.br.stylesync.dto.response.ApiResponse;
 import com.br.stylesync.dto.request.OfficeRequest;
+import com.br.stylesync.model.Employee;
 import com.br.stylesync.model.Office;
 import com.br.stylesync.repository.OfficeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class OfficeService {
                 .name(officeRequest.name())
                 .description(officeRequest.description())
                 .build();
-        office.setCreatedBy("admin");
+        office.setCreatedBy(Employee.currentUser().getName());
         officeRepository.save(office);
 
         return ResponseEntity.ok().body(new ApiResponse("Office saved successfully", officeRequest));

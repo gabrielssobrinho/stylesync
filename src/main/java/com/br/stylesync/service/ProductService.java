@@ -2,7 +2,10 @@ package com.br.stylesync.service;
 
 import com.br.stylesync.dto.request.ProducRequest;
 import com.br.stylesync.dto.response.ApiResponse;
+import com.br.stylesync.dto.response.ProductResponse;
 import com.br.stylesync.model.Product;
+import com.br.stylesync.model.ProductCategory;
+import com.br.stylesync.repository.ProductCategoryRepository;
 import com.br.stylesync.repository.ProductRespository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +18,10 @@ import java.util.UUID;
 public class ProductService {
 
     @Autowired
-    ProductRespository productRespository;
+    private ProductRespository productRespository;
+
+    @Autowired
+    private ProductCategoryRepository productCategoryRepository;
     public ResponseEntity<ApiResponse> getProduct(UUID id) {
         Optional<Product> productO = productRespository.findById(id);
         return productO.map(product -> ResponseEntity.ok().body(new ApiResponse("Produto encontrado", product)))
@@ -23,8 +29,20 @@ public class ProductService {
     }
 
     public ResponseEntity<ApiResponse> saveProduct(ProducRequest product) {
-        Product productSaved = new Product();
-        BeanUtils.copyProperties(product, productSaved);
-        return ResponseEntity.ok().body(new ApiResponse("Produto salvo com sucesso", productSaved));
+        ProductCategory productCategory = productCategoryRepository.findById(product.categoryId()).orElseThrow(() -> new RuntimeException("Category not Found"));
+
+        Product productSaved = Product.builder()
+                .name(product.name())
+                .price(product.price())
+                .productCategory(productCategory)
+                .brand(product.brand())
+                .code(product.code())
+                .size(product.size())
+                .quantity(product.quantity())
+                .discount(product.discount())
+                .variation(product.variation())
+                .build();
+        productRespository.save(productSaved);
+        return ResponseEntity.ok().body(new ApiResponse("Product with Success", new ProductResponse(productSaved)));
     }
 }

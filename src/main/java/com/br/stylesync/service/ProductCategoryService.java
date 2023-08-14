@@ -3,6 +3,7 @@ package com.br.stylesync.service;
 import com.br.stylesync.dto.request.ProductCategoryRequest;
 import com.br.stylesync.dto.response.ApiResponse;
 import com.br.stylesync.dto.response.ProductCategoryResponse;
+import com.br.stylesync.model.Employee;
 import com.br.stylesync.model.ProductCategory;
 import com.br.stylesync.repository.ProductCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class ProductCategoryService {
             return ResponseEntity.badRequest().body(new ApiResponse("Category already exists", null));
         }
         ProductCategory category = new ProductCategory(request.name());
-        category.setCreatedBy("admin");
+        category.setCreatedBy(Employee.currentUser().getName());
         return ResponseEntity.ok().body(new ApiResponse("Category created successfully", categoryRepository.save(category)));
     }
 

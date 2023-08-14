@@ -1,5 +1,6 @@
 package com.br.stylesync.resource;
 
+import com.br.stylesync.dto.CustomerUpdateDto;
 import com.br.stylesync.dto.request.CustomerRequest;
 import com.br.stylesync.dto.response.ApiResponse;
 import com.br.stylesync.model.AuditEntity;
@@ -33,12 +34,12 @@ public class CustomerResource extends AuditEntity {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<ApiResponse> updateCustomer(UUID id, CustomerRequest request){
+    public ResponseEntity<ApiResponse> updateCustomer(@PathVariable UUID id, CustomerUpdateDto request){
         return customerService.updateCustomer(id, request);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<ApiResponse> deleteCustomer(UUID id){
+    public ResponseEntity<ApiResponse> deleteCustomer(@PathVariable UUID id){
         return customerService.deleteCustomer(id);
     }
 }

@@ -1,5 +1,6 @@
 package com.br.stylesync.model;
 
+import com.br.stylesync.enums.DiscountCouponType;
 import jakarta.persistence.Entity;
 import lombok.*;
 
@@ -16,12 +17,12 @@ public class DiscountCoupon extends AuditEntity{
 
     private Date expirationDate;
     private Double minValue;
-    private String type;
+    private DiscountCouponType type;
     private Double value;
     private String code;
 
     public boolean isExpired() {
-        return false;
+        return expirationDate.before(new Date());
     }
 
 }

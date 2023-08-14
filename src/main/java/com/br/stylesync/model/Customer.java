@@ -1,7 +1,10 @@
 package com.br.stylesync.model;
 
-import com.br.stylesync.dto.request.CustomerRequest;
-import jakarta.persistence.*;
+import com.br.stylesync.dto.CustomerUpdateDto;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -39,7 +42,7 @@ public class Customer extends AuditEntity{
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
-    public void update(CustomerRequest request) {
+    public void update(CustomerUpdateDto request) {
         this.name = request.name();
         this.email = request.email();
         this.phone = request.phone();

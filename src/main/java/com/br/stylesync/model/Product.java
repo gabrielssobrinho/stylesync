@@ -1,5 +1,7 @@
 package com.br.stylesync.model;
 
+import com.br.stylesync.dto.CustomerUpdateDto;
+import com.br.stylesync.dto.UpdateProductDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -42,4 +44,13 @@ public class Product extends AuditEntity {
     @JoinColumn(name = "product_category_id", nullable = false)
     private ProductCategory productCategory;
 
+    public void update(UpdateProductDto request) {
+        name = request.name();
+        brand = request.brand();
+        size = request.size();
+        price = request.price();
+        variation = request.variation();
+        discount = request.discount();
+        quantity = request.quantity();
+    }
 }

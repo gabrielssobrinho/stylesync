@@ -1,14 +1,15 @@
 package com.br.stylesync.resource;
 
-import com.br.stylesync.dto.request.ProducRequest;
+import com.br.stylesync.dto.UpdateProductDto;
+import com.br.stylesync.dto.request.ProductRequest;
 import com.br.stylesync.dto.response.ApiResponse;
 import com.br.stylesync.model.Product;
 import com.br.stylesync.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.async.DeferredResult;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -19,16 +20,21 @@ public class ProductResource {
     private ProductService productService;
 
     @PostMapping
-    public DeferredResult<ResponseEntity<ApiResponse>> saveProduct(@RequestBody ProducRequest request) {
-        final DeferredResult<ResponseEntity<ApiResponse>> deferredResult = new DeferredResult<>();
-        deferredResult.setResult(this.productService.saveProduct(request));
-        return deferredResult;
+    public ResponseEntity<ApiResponse> saveProduct(@RequestBody ProductRequest request) {
+        return this.productService.saveProduct(request);
     }
 
     @GetMapping("{id}")
-    public DeferredResult<ResponseEntity<ApiResponse>> getProduct(@PathVariable UUID id) {
-        final DeferredResult<ResponseEntity<ApiResponse>> deferredResult = new DeferredResult<>();
-        deferredResult.setResult(this.productService.getProduct(id));
-        return deferredResult;
+    public ResponseEntity<ApiResponse> getProduct(@PathVariable UUID id) {
+        return this.productService.getProduct(id);
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<ApiResponse> updateProduct(@PathVariable UUID id, @RequestBody UpdateProductDto updateProductDto) {
+        return this.productService.updateProduct(id, updateProductDto);
+    }
+    @GetMapping
+    public List<Product> findAllProducts(){
+        return this.productService.findAllProducts();
     }
 }

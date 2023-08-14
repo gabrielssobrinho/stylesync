@@ -37,4 +37,8 @@ public class ProductResource {
     public List<Product> findAllProducts(){
         return this.productService.findAllProducts();
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> deleteProduct(@PathVariable UUID id){
+        return this.productService.deleteProduct(id);
+    }
 }

@@ -3,8 +3,6 @@ package com.br.stylesync.service;
 import com.br.stylesync.dto.UpdateProductDto;
 import com.br.stylesync.dto.request.ProductRequest;
 import com.br.stylesync.dto.response.ApiResponse;
-import com.br.stylesync.dto.response.CustomerResponse;
-import com.br.stylesync.dto.response.EmployeeResponse;
 import com.br.stylesync.dto.response.ProductResponse;
 import com.br.stylesync.model.Employee;
 import com.br.stylesync.model.Product;
@@ -14,7 +12,6 @@ import com.br.stylesync.repository.ProductRespository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -61,21 +58,20 @@ public class ProductService {
             return ResponseEntity.ok().body(new ApiResponse("Product not found", id));
         }
 
-        Product productSaved = Product.builder()
-                .name(productRequest.name())
-                .brand(productRequest.brand())
-                .size(productRequest.size())
-                .price(productRequest.price())
-                .variation(productRequest.variation())
-                .discount(productRequest.discount())
-                .quantity(productRequest.quantity())
-                .build();
-
         product.update(productRequest);
         productRespository.save(product);
         return ResponseEntity.ok(new ApiResponse("Product updated successfully", new ProductResponse(product)));
     }
     public List<Product> findAllProducts(){
         return productRespository.findAll();
+    }
+
+    public ResponseEntity<ApiResponse> deleteProduct(UUID  id){
+        Product product = productRespository.findById(id).orElseThrow(null);
+        if(product == null){
+            return ResponseEntity.ok().body(new ApiResponse("Product not found", id));
+        }
+        productRespository.delete(product);
+        return ResponseEntity.ok().body(new ApiResponse("Product successfully deleted", id));
     }
 }

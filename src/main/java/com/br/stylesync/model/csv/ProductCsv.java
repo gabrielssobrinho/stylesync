@@ -2,9 +2,9 @@ package com.br.stylesync.model.csv;
 
 import com.opencsv.bean.CsvBindByName;
 import lombok.Data;
+import lombok.ToString;
 
 @Data
-
 public class ProductCsv {
     @CsvBindByName(column = "CODIGO")
     private String sku;

@@ -4,16 +4,18 @@ import com.br.stylesync.enums.UploadStatus;
 import com.br.stylesync.model.Upload;
 import com.br.stylesync.model.csv.ProductCsv;
 import com.br.stylesync.repository.UploadRepository;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.CsvToBeanBuilder;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidParameterException;
 import java.util.List;
 
 @Service
@@ -24,7 +26,7 @@ public class UploadService {
 
     private final UploadRepository uploadRepository;
 
-    public Upload save(File file) throws Exception {
+    public Upload save(File file) {
         Upload upload = new Upload();
         upload.setUploadStatus(UploadStatus.IN_PROCESS);
         upload.setFile(file);
@@ -36,28 +38,40 @@ public class UploadService {
         try {
             log.info("Finalize upload - {}", upload);
 
-            //CsvToBean<ProductCsv> csvReader = new CsvToBeanBuilder<ProductCsv>(upload.getFile())
-            //        .withType(ProductCsv.class)
-            //        .withSeparator(';')
-            //        .withIgnoreLeadingWhiteSpace(true)
-            //        .withIgnoreQuotations(true)
-            //        .withIgnoreEmptyLine(true)
-            //        .build();
+            FileInputStream fis = new FileInputStream(upload.getFile());
+            InputStreamReader reader = new InputStreamReader(fis, StandardCharsets.UTF_8);
 
-            //List<ProductCsv> results = csvReader.parse();
+            CsvToBean<ProductCsv> csvReader = new CsvToBeanBuilder<ProductCsv>(reader)
+                    .withType(ProductCsv.class)
+                    .withSeparator(';')
+                    .withIgnoreLeadingWhiteSpace(true)
+                    .withIgnoreQuotations(true)
+                    .withIgnoreEmptyLine(true)
+                    .build();
 
-            //boolean finalizeWithSuccess = this.createCmDataByCsv(results, cmDataVersion);
-            //reader.close();
+            List<ProductCsv> results = csvReader.parse();
 
-            //if (finalizeWithSuccess) {
-            //    cmDataVersion.setUploadStatus(UploadStatus.SUCCESS);
-            //    log.info("Building complete - {}", cmDataVersion.getStatus());
-            //}
+            this.processDataByCsv(results, upload);
+            reader.close();
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            //this.finalizeImportWithError(cmDataVersion.getId(), new ArrayList<>());
+            this.finalizeImportWithError(upload);
         }
-        //this.cmDataVersionService.save(cmDataVersion);
+        this.uploadRepository.save(upload);
+    }
+
+    public void finalizeImportWithError(Upload upload) {
+        try {
+            upload.setUploadStatus(UploadStatus.ERROR);
+
+        } catch (Exception ex) {
+            throw new InvalidParameterException(ex.getMessage(), ex);
+        }
+    }
+
+    public void processDataByCsv(List<ProductCsv> editedCsv, Upload upload) {
+        log.info("testing process data by upload version {}", upload);
+        editedCsv.forEach(line -> log.info(line.toString()));
     }
 }

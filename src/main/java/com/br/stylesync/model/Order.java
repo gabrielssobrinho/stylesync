@@ -35,4 +35,9 @@ public class Order extends AuditEntity{
     @JoinColumn(name = "discount_coupon_id")
     private DiscountCoupon discountCoupon;
 
+    public void calculateTotalAmount(){
+        for (Product product : this.products) {
+            this.totalAmount += product.getPrice() * product.getQuantity();
+        }
+    }
 }

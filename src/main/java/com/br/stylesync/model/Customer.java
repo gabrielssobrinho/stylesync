@@ -1,9 +1,8 @@
 package com.br.stylesync.model;
 
+import com.br.stylesync.dto.request.CustomerRequest;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +11,9 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Customer extends AuditEntity{
 
     @Column(nullable = false)
@@ -32,6 +34,15 @@ public class Customer extends AuditEntity{
     @Column(nullable = false)
     private String address;
 
+    private Boolean active;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
+
+    public void update(CustomerRequest request) {
+        this.name = request.name();
+        this.email = request.email();
+        this.phone = request.phone();
+        this.address = request.address();
+    }
 }

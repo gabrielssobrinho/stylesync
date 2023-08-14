@@ -17,7 +17,13 @@ public record CustomerResponse(UUID id, String name, String email, Date birthDat
                                String address, List<Order> orders) implements Serializable {
 
     public CustomerResponse(Customer customer){
-        this(customer.getId(), customer.getName(), customer.getEmail(), customer.getBirthDate(), customer.getPhone(),
-                customer.getCpf(), customer.getAddress(), customer.getOrders());
+        this(customer.getId(),
+                customer.getName(),
+                customer.getEmail(),
+                customer.getBirthDate(),
+                customer.getPhone(),
+                customer.getCpf(),
+                customer.getAddress(),
+                customer.getOrders());
     }
 }

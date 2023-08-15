@@ -25,10 +25,10 @@ public class Order extends AuditEntity{
     private Date orderDate;
 
     @Column(name = "totalAmount")
-    private Double totalAmount;
+    private Double totalAmount = 0d;
 
     @ToString.Exclude
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Product> products = new ArrayList<>();
 
     @ManyToOne
@@ -37,7 +37,7 @@ public class Order extends AuditEntity{
 
     public void calculateTotalAmount(){
         for (Product product : this.products) {
-            this.totalAmount += product.getPrice() * product.getQuantity();
+            this.totalAmount += product.getPrice();
         }
     }
 }

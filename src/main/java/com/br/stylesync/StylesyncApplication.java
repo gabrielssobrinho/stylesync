@@ -12,7 +12,7 @@ public class StylesyncApplication {
     public static void main(String[] args) {
         SpringApplication.run(StylesyncApplication.class, args);
         PasswordEncoder encode = new BCryptPasswordEncoder();
-        System.out.println(encode.encode("kae123"));
+        System.out.println(encode.encode("123"));
     }
 
 }

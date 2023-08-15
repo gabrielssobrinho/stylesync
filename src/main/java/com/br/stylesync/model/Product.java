@@ -16,7 +16,7 @@ import lombok.*;
 public class Product extends AuditEntity {
 
     @Column(name = "sku", unique = true)
-    private Long code;
+    private String code;
 
     @Column(name = "name")
     private String name;

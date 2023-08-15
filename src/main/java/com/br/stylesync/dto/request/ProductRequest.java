@@ -10,7 +10,7 @@ import java.util.UUID;
  * DTO for {@link com.br.stylesync.model.Product}
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record ProductRequest(@NotNull @Positive Long code,
+public record ProductRequest(@NotBlank String code,
                              @NotEmpty String name,
                              @NotBlank String brand,
                              @NotBlank String size,

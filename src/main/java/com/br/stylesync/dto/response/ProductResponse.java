@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 public record ProductResponse(
-        Long code,
+        String code,
         String name,
         String brand,
         String size,

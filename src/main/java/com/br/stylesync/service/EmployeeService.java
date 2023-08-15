@@ -138,6 +138,12 @@ public class EmployeeService {
             return ResponseEntity.badRequest().body(new ApiResponse("Token not found", token));
         }
         Employee employee = employeeActivationToken.getEmployee();
+        if(!Employee.currentUser().equals(employee)){
+            return ResponseEntity.badRequest().body(new ApiResponse("You can't activate this employee", token));
+        }
+        if(employeeActivationToken.isExpired()){
+            return ResponseEntity.badRequest().body(new ApiResponse("Token expired", token));
+        }
         employee.setActive(true);
         employeeRepository.save(employee);
         employeeActivationTokenRepository.delete(employeeActivationToken);
